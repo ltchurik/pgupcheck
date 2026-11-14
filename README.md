@@ -88,7 +88,21 @@ The catalog is the heart of the project, and adding an entry is the most useful 
 
 ## Author
 
-[Ľubomír Tchurik](https://lubomirtchurik.sk): Linux and PostgreSQL infrastructure, LLM evaluation. Also the author of [mcp-jail](https://github.com/ltchurik/mcp-jail) and [sk-tokenizer-bench](https://github.com/ltchurik/sk-tokenizer-bench).
+Created and maintained by **[Ľubomír Tchurik](https://lubomirtchurik.sk)**, a Linux and PostgreSQL infrastructure specialist from Bratislava, Slovakia, working on LLM evaluation and AI-agent security.
+
+[Website](https://lubomirtchurik.sk) · [GitHub](https://github.com/ltchurik) · [LinkedIn](https://www.linkedin.com/in/lubomir-tchurik/) · [ORCID](https://orcid.org/0009-0005-8053-9405)
+
+If this project is useful to you, a ⭐ on GitHub helps others find it.
+
+### More open-source projects by the author
+
+- [sk-llm-eval](https://github.com/ltchurik/sk-llm-eval): Does your LLM write correct Slovak? 207-task language quality benchmark
+- [sk-tokenizer-bench](https://github.com/ltchurik/sk-tokenizer-bench): the Slovak token tax across 30+ LLM tokenizers
+- [token-tax-index](https://github.com/ltchurik/token-tax-index): how much more every language costs in LLM tokens
+- [llm-locale-lint](https://github.com/ltchurik/llm-locale-lint): CLDR-based checker of numbers, dates, money and quotes in LLM output
+- [localebench](https://github.com/ltchurik/localebench): do LLMs write like a native? Locale conventions benchmark
+- [sk-asr-bench](https://github.com/ltchurik/sk-asr-bench): how well AI understands spoken Slovak
+- [mcp-jail](https://github.com/ltchurik/mcp-jail): sandbox for MCP servers: egress allowlist, fs scope, audit log
 
 ## License
 

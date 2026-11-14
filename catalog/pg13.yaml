@@ -1,0 +1,18 @@
+# Breaking changes introduced in PostgreSQL 13.
+# Source: https://www.postgresql.org/docs/release/13.0/
+
+- id: PG13-wal-keep-segments
+  introduced_in: 13
+  severity: error
+  title: wal_keep_segments was replaced by wal_keep_size
+  description: >
+    The server parameter wal_keep_segments was removed. Its replacement,
+    wal_keep_size, is given as an amount of WAL (megabytes) instead of a
+    number of WAL segment files.
+  detect:
+    conf:
+      - param: wal_keep_segments
+  remediation: >
+    Replace wal_keep_segments = N with wal_keep_size set to N times the WAL
+    segment size (with the default 16 MB segments: N * 16MB).
+  url: https://www.postgresql.org/docs/release/13.0/

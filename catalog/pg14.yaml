@@ -1,0 +1,74 @@
+# Breaking changes introduced in PostgreSQL 14.
+# Source: https://www.postgresql.org/docs/release/14.0/
+
+- id: PG14-postfix-operators
+  introduced_in: 14
+  severity: error
+  title: Postfix (right-unary) operators are no longer supported
+  description: >
+    PostgreSQL 14 removed support for postfix operators. A user-defined
+    operator with only a left argument cannot be created in 14 or later, so
+    it cannot be restored or upgraded.
+  detect:
+    builtin: postfix_operator
+  remediation: >
+    Drop the operator before upgrading and replace its uses with a function
+    call or a prefix/infix operator.
+  url: https://www.postgresql.org/docs/release/14.0/
+
+- id: PG14-factorial-operators
+  introduced_in: 14
+  severity: error
+  title: Factorial operators ! and !! and function numeric_fac() were removed
+  description: >
+    The postfix factorial operator !, the prefix operator !! and the function
+    numeric_fac() no longer exist. The factorial() function is still available.
+    pgupcheck currently detects numeric_fac() only; check your queries for the
+    ! and !! operators as well.
+  detect:
+    sql_regex:
+      - '\bnumeric_fac\s*\('
+  remediation: Use factorial(n) instead.
+  url: https://www.postgresql.org/docs/release/14.0/
+
+- id: PG14-array-functions-anycompatible
+  introduced_in: 14
+  severity: error
+  title: Aggregates/operators built on array_append & co. must be recreated
+  description: >
+    The built-in functions array_append, array_prepend, array_cat,
+    array_position, array_positions, array_remove, array_replace and
+    width_bucket now take anycompatible arguments instead of anyelement /
+    anyarray. User-defined aggregates or operators that reference them by the
+    old signature fail to restore and block pg_upgrade.
+  detect:
+    sql_regex:
+      - '^\s*create\s+(?:or\s+replace\s+)?(?:aggregate|operator)\b.*?\b(?:sfunc|msfunc|finalfunc|combinefunc|function|procedure)\s*=\s*(?:pg_catalog\.)?(?:array_append|array_prepend|array_cat|array_position|array_positions|array_remove|array_replace|width_bucket)\b'
+  remediation: >
+    Drop these aggregates/operators before upgrading and recreate them with
+    anycompatible / anycompatiblearray argument types afterwards.
+  url: https://www.postgresql.org/docs/release/14.0/
+
+- id: PG14-operator-precedence-warning
+  introduced_in: 14
+  severity: error
+  title: operator_precedence_warning was removed
+  description: The server parameter operator_precedence_warning no longer exists.
+  detect:
+    conf:
+      - param: operator_precedence_warning
+  remediation: Remove operator_precedence_warning from the configuration.
+  url: https://www.postgresql.org/docs/release/14.0/
+
+- id: PG14-vacuum-cleanup-index-scale-factor
+  introduced_in: 14
+  severity: error
+  title: vacuum_cleanup_index_scale_factor was removed
+  description: >
+    The server parameter vacuum_cleanup_index_scale_factor (and the matching
+    B-tree storage parameter) no longer exists; it had been ignored since 13.3.
+  detect:
+    conf:
+      - param: vacuum_cleanup_index_scale_factor
+  remediation: Remove vacuum_cleanup_index_scale_factor from the configuration.
+  url: https://www.postgresql.org/docs/release/14.0/

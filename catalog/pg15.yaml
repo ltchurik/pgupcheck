@@ -1,0 +1,66 @@
+# Breaking changes introduced in PostgreSQL 15.
+# Source: https://www.postgresql.org/docs/release/15.0/
+
+- id: PG15-stats-temp-directory
+  introduced_in: 15
+  severity: error
+  title: stats_temp_directory was removed
+  description: >
+    Cumulative statistics moved to shared memory in PostgreSQL 15, and the
+    server parameter stats_temp_directory was removed.
+  detect:
+    conf:
+      - param: stats_temp_directory
+  remediation: Remove stats_temp_directory from the configuration.
+  url: https://www.postgresql.org/docs/release/15.0/
+
+- id: PG15-exclusive-backup-functions
+  introduced_in: 15
+  severity: error
+  title: Exclusive backup mode and pg_start_backup()/pg_stop_backup() were removed
+  description: >
+    Exclusive backup mode was removed. pg_start_backup() and pg_stop_backup()
+    were renamed to pg_backup_start() and pg_backup_stop(), and
+    pg_is_in_backup() and pg_backup_start_time() were removed. Functions or
+    backup scripts calling the old names fail.
+  detect:
+    sql_regex:
+      - '\bpg_(?:start_backup|stop_backup|is_in_backup|backup_start_time)\s*\('
+  remediation: >
+    Switch to non-exclusive backups with pg_backup_start()/pg_backup_stop()
+    (the session must stay open in between), or use pg_basebackup. Check
+    shell backup scripts too; pgupcheck only sees the schema.
+  url: https://www.postgresql.org/docs/release/15.0/
+
+- id: PG15-plpython2
+  introduced_in: 15
+  severity: error
+  title: PL/Python 2 (plpythonu, plpython2u) is no longer supported
+  description: >
+    Support for Python 2 in PL/Python was removed. Functions written in
+    plpythonu or plpython2u cannot be restored.
+  detect:
+    sql_regex:
+      - '\b(?:language\s+|create\s+extension\s+(?:if\s+not\s+exists\s+)?)"?plpython2?u"?(?:\s|$)'
+  remediation: >
+    Port the functions to Python 3 and recreate them as plpython3u before
+    upgrading.
+  url: https://www.postgresql.org/docs/release/15.0/
+
+- id: PG15-public-schema-create
+  introduced_in: 15
+  severity: info
+  title: New databases no longer grant CREATE on schema public to PUBLIC
+  description: >
+    In newly created clusters and databases, ordinary users can no longer
+    create objects in schema public, which is now owned by pg_database_owner.
+    pg_upgrade and dump/restore preserve the existing privileges, but
+    databases you create later on the new version (and fresh deployments
+    built from scripts) get the new default.
+  detect:
+    always: true
+  remediation: >
+    If your application creates objects in public as a non-owner role, grant
+    it explicitly (GRANT CREATE ON SCHEMA public TO app_role) or use a
+    dedicated schema.
+  url: https://www.postgresql.org/docs/release/15.0/

@@ -1,0 +1,59 @@
+# Breaking changes introduced in PostgreSQL 17.
+# Source: https://www.postgresql.org/docs/release/17.0/
+
+- id: PG17-old-snapshot-threshold
+  introduced_in: 17
+  severity: error
+  title: old_snapshot_threshold was removed
+  description: >
+    The "snapshot too old" feature and its server parameter
+    old_snapshot_threshold were removed.
+  detect:
+    conf:
+      - param: old_snapshot_threshold
+  remediation: Remove old_snapshot_threshold from the configuration.
+  url: https://www.postgresql.org/docs/release/17.0/
+
+- id: PG17-db-user-namespace
+  introduced_in: 17
+  severity: error
+  title: db_user_namespace was removed
+  description: The server parameter db_user_namespace (per-database users) no longer exists.
+  detect:
+    conf:
+      - param: db_user_namespace
+  remediation: >
+    Remove db_user_namespace and rename any per-database users
+    (user@database) to ordinary role names.
+  url: https://www.postgresql.org/docs/release/17.0/
+
+- id: PG17-adminpack
+  introduced_in: 17
+  severity: error
+  title: The adminpack extension was removed
+  description: >
+    The adminpack contrib module (used by older pgAdmin versions) is no longer
+    shipped, so CREATE EXTENSION adminpack fails on 17.
+  detect:
+    sql_regex:
+      - '\bcreate\s+extension\s+(?:if\s+not\s+exists\s+)?"?adminpack"?(?:\s|$)'
+  remediation: Run DROP EXTENSION adminpack before upgrading.
+  url: https://www.postgresql.org/docs/release/17.0/
+
+- id: PG17-maintenance-search-path
+  introduced_in: 17
+  severity: warning
+  title: Functions used by indexes and materialized views now run with a safe search_path
+  description: >
+    Maintenance operations (ANALYZE, CLUSTER, CREATE INDEX, CREATE/REFRESH
+    MATERIALIZED VIEW, REINDEX, VACUUM) now run functions with a restricted
+    search_path. A function used in an expression index or a materialized
+    view that refers to objects outside pg_catalog without schema
+    qualification can fail. pgupcheck flags such functions that do not set
+    their own search_path; review whether the body uses unqualified names.
+  detect:
+    builtin: index_func_search_path
+  remediation: >
+    Add SET search_path to the function (ALTER FUNCTION f(...) SET
+    search_path = myschema, pg_catalog) or schema-qualify the objects it uses.
+  url: https://www.postgresql.org/docs/release/17.0/

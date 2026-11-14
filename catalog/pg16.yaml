@@ -1,0 +1,41 @@
+# Breaking changes introduced in PostgreSQL 16.
+# Source: https://www.postgresql.org/docs/release/16.0/
+
+- id: PG16-vacuum-defer-cleanup-age
+  introduced_in: 16
+  severity: error
+  title: vacuum_defer_cleanup_age was removed
+  description: The server parameter vacuum_defer_cleanup_age no longer exists.
+  detect:
+    conf:
+      - param: vacuum_defer_cleanup_age
+  remediation: >
+    Remove vacuum_defer_cleanup_age. On standbys, hot_standby_feedback or
+    replication slots are the usual alternatives.
+  url: https://www.postgresql.org/docs/release/16.0/
+
+- id: PG16-promote-trigger-file
+  introduced_in: 16
+  severity: error
+  title: promote_trigger_file was removed
+  description: >
+    The server parameter promote_trigger_file no longer exists, so creating a
+    trigger file no longer promotes a standby.
+  detect:
+    conf:
+      - param: promote_trigger_file
+  remediation: >
+    Remove promote_trigger_file and promote with pg_ctl promote or
+    SELECT pg_promote(). Update failover tooling that relied on the file.
+  url: https://www.postgresql.org/docs/release/16.0/
+
+- id: PG16-force-parallel-mode
+  introduced_in: 16
+  severity: error
+  title: force_parallel_mode was renamed to debug_parallel_query
+  description: The server parameter force_parallel_mode was renamed to debug_parallel_query.
+  detect:
+    conf:
+      - param: force_parallel_mode
+  remediation: Rename the setting to debug_parallel_query.
+  url: https://www.postgresql.org/docs/release/16.0/

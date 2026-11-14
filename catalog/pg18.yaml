@@ -1,0 +1,38 @@
+# Breaking changes introduced in PostgreSQL 18.
+# Source: https://www.postgresql.org/docs/release/18.0/
+
+- id: PG18-md5-passwords
+  introduced_in: 18
+  severity: warning
+  title: MD5 password authentication is deprecated
+  description: >
+    MD5 passwords are deprecated and support will be removed in a future
+    major version. Setting an MD5 password now emits a deprecation warning
+    (controlled by md5_password_warnings).
+  detect:
+    conf:
+      - param: password_encryption
+        value_regex: '^md5$'
+    sql_regex:
+      - "\\bpassword\\s+'md5[0-9a-f]{32}'"
+  remediation: >
+    Set password_encryption = scram-sha-256, have users reset their
+    passwords, and switch pg_hba.conf entries from md5 to scram-sha-256.
+  url: https://www.postgresql.org/docs/release/18.0/
+
+- id: PG18-data-checksums-default
+  introduced_in: 18
+  severity: warning
+  title: initdb now enables data checksums by default
+  description: >
+    initdb enables data checksums unless --no-data-checksums is given.
+    pg_upgrade requires the old and new clusters to have the same checksum
+    setting, so upgrading a cluster without checksums into a default-initialized
+    18 cluster fails.
+  detect:
+    always: true
+  remediation: >
+    Check the old cluster (SHOW data_checksums). If it is off, initialize the
+    new cluster with initdb --no-data-checksums, or enable checksums on the
+    old cluster first with pg_checksums --enable (requires a shutdown).
+  url: https://www.postgresql.org/docs/release/18.0/

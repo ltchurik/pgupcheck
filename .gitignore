@@ -1,0 +1,4 @@
+/pgupcheck
+/dist/
+*.test
+*.out

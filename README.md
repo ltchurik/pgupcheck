@@ -1,5 +1,7 @@
 # pgupcheck
 
+[![pgupcheck: PostgreSQL major upgrade breaking-change checker](.github/social-preview.png)](https://github.com/ltchurik/pgupcheck)
+
 **Will your PostgreSQL major upgrade break anything?** `pgupcheck` reads your schema dump and `postgresql.conf` and tells you, file and line, which breaking changes between your current and target major version (PostgreSQL 12 → 18) affect *your* database, and what to do about each.
 
 [![ci](https://github.com/ltchurik/pgupcheck/actions/workflows/ci.yml/badge.svg)](https://github.com/ltchurik/pgupcheck/actions/workflows/ci.yml)
